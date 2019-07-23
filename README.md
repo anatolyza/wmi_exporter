@@ -55,6 +55,7 @@ Name | Description
 `METRICS_PATH` | The path at which to serve metrics. Defaults to `/metrics`
 `TEXTFILE_DIR` | As the `--collector.textfile.directory` flag, provide a directory to read text files with metrics from
 `EXTRA_FLAGS` | Allows passing full CLI flags. Defaults to an empty string.
+`CPU_AFFINITY` | Allows passing optional CPU affinity for the exporter the parameter is a mask ,  for example for CPU0=1 CPU1=2 CPU2=4 CPU3=8 CPU4+CPU5=48 etc..  http://store.tomandmiu.com/cal-amc.php
 
 Parameters are sent to the installer via `msiexec`. Example invocations:
 
