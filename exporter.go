@@ -5,9 +5,12 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"golang.org/x/sys/windows/svc"
@@ -192,6 +195,10 @@ func main() {
 			"collectors.print",
 			"If true, print available collectors and exit.",
 		).Bool()
+		affinityMask = kingpin.Flag(
+			"cpu.affinitymask",
+			"CPU Affinity mask on 4CPU system for CPU 0=1 1=2 2=4 3=8 etc..",
+		).Default("-1").String()
 	)
 
 	log.AddFlags(kingpin.CommandLine)
@@ -210,6 +217,18 @@ func main() {
 			fmt.Printf(" - %s\n", n)
 		}
 		return
+	}
+
+	if affinityMask != nil {
+		straffinityMask := *affinityMask
+		if straffinityMask != "-1" {
+			runtime.GOMAXPROCS(1)
+			fmt.Printf("Got affinity mask:" + straffinityMask + "\n")
+			affinityInt, err := strconv.Atoi(straffinityMask)
+			if err == nil {
+				setProcessAffinity(affinityInt)
+			}
+		}
 	}
 
 	initWbem()
@@ -301,5 +320,29 @@ loop:
 		}
 	}
 	changes <- svc.Status{State: svc.StopPending}
+	return
+}
+func setProcessAffinity(v int) {
+	h, err := syscall.GetCurrentProcess()
+	if err != nil {
+		log.Fatalf("GetCurrentProcess failed: %v", err)
+		return
+	}
+
+	if err := setProcessAffinityMask(h, uintptr(v)); err != nil {
+		log.Fatalf("SetProcessAffinityMask failed: %v", err)
+		return
+	}
+}
+
+func setProcessAffinityMask(h syscall.Handle, mask uintptr) (err error) {
+	r1, _, e1 := syscall.Syscall(syscall.NewLazyDLL("kernel32.dll").NewProc("SetProcessAffinityMask").Addr(), 2, uintptr(h), mask, 0)
+	if r1 == 0 {
+		if e1 != 0 {
+			err = error(e1)
+		} else {
+			err = syscall.EINVAL
+		}
+	}
 	return
 }
