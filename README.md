@@ -1,6 +1,7 @@
 # WMI exporter
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ljwan71as6pf2joe?svg=true)](https://ci.appveyor.com/project/martinlindhe/wmi-exporter)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fanatolyza%2Fwmi_exporter.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fanatolyza%2Fwmi_exporter?ref=badge_shield)
 
 Prometheus exporter for Windows machines, using the WMI (Windows Management Instrumentation).
 
@@ -102,3 +103,6 @@ Please note that in Windows batch scripts (and when using the `cmd` command prom
 ## License
 
 Under [MIT](LICENSE)
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fanatolyza%2Fwmi_exporter.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fanatolyza%2Fwmi_exporter?ref=badge_large)
